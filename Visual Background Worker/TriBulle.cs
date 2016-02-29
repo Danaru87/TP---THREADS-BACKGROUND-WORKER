@@ -36,6 +36,7 @@ namespace Visual_Background_Worker
         private void Afficher(double[] tableau, ListView lstValeursNonTriees)
         {
             lstValeursNonTriees.Clear();
+            lstValeursTriees.Clear();
             foreach(double value in tableau)
             {
                 lstValeursNonTriees.Items.Add(new ListViewItem(Convert.ToString(value)));
@@ -54,8 +55,10 @@ namespace Visual_Background_Worker
         private void btnTrier_Click(object sender, EventArgs e)
         {
             frmTri f = new frmTri(tableau);
-            f.ShowDialog();
-            Afficher(f.tableau, lstValeursTriees);
+            if(f.ShowDialog() == DialogResult.OK)
+            {
+                Afficher(f.tableau, lstValeursTriees);
+            }     
         }
     }
 }

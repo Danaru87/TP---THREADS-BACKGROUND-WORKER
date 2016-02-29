@@ -29,20 +29,16 @@ namespace Visual_Background_Worker
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            Trier();
+            Trier(e);
         }
 
-        private void Trier()
+        private void Trier(DoWorkEventArgs e)
         {
             int i, iRech, iMin;
             double tmp;
             int N = tableau.Length;
             for (i = 0; i < N; i++)
             {
-                if(backgroundWorker1.CancellationPending)
-                {
-                    return;
-                }
                 for (iRech = iMin = i; iRech < N; iRech++)
                     if (tableau[iRech] < tableau[iMin])
                         iMin = iRech;
@@ -52,8 +48,16 @@ namespace Visual_Background_Worker
                     tableau[iMin] = tableau[i];
                     tableau[i] = tmp;
                 }
+
                 backgroundWorker1.ReportProgress(i);
+
+                if (backgroundWorker1.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
+            
         }
 
         private void btnAnnuler_Click(object sender, EventArgs e)
@@ -62,20 +66,31 @@ namespace Visual_Background_Worker
             {
                 backgroundWorker1.CancelAsync();
             }
+            else { this.Close(); }
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if(e.Cancelled)
             {
-                Close();
+                btnAnnuler.Enabled = false;
+                MessageBox.Show("Tri annulé");
             }
-            btnOk.Enabled = true;
+            else
+            {
+                MessageBox.Show("Tri effectué");
+                btnOk.Enabled = true;
+            }
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
