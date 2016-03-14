@@ -75,6 +75,7 @@ namespace Visual_Background_Worker
             {
                 btnAnnuler.Enabled = false;
                 MessageBox.Show("Tri annulé");
+                this.Close();
             }
             else
             {
